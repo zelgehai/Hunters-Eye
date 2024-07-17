@@ -1,44 +1,77 @@
 import cv2 as cv
 import numpy as np
 #pyautogui -> automates keyboard + mouse movements [also allows locateonScreen]
+import os
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-#loading image format
+def findClickPositions(needle_image_path, default_image_path, threshold = 0.6, debug_mode=None):
 
-default_image = cv.imread('img_1.jpg', cv.IMREAD_REDUCED_COLOR_2) #IMREAD_UNCHANGED
-needle_image = cv.imread('zombie_1.jpg', cv.IMREAD_REDUCED_COLOR_2)
-
-#calls matchtemplate
-result = cv.matchTemplate(default_image, needle_image, cv.TM_CCOEFF_NORMED)
-
-#cv.imshow('Result', result) #shows us the result in image format. Runs and closes instantly
-#cv.waitKey()
-
-#Get best pixel location [best match position]
-min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result) 
-
-print('Best match top left position: %s' %str(max_loc))
-print('Best match confidence: %s' % max_val)
-
-#Threshold, because algorithm will always return a value; but not right img.
-threshold = 0.8
-if max_val >= threshold:
-    print("found needle!")
-    
-    #dimensions of needle image
+    default_image = cv.imread(default_image_path, cv.IMREAD_REDUCED_COLOR_2) #IMREAD_UNCHANGED
+    needle_image = cv.imread(needle_image_path, cv.IMREAD_REDUCED_COLOR_2)
     needle_w = needle_image.shape[1]
     needle_h = needle_image.shape[0]
 
-    #definitions:
-    top_left = max_loc
+    #calls matchtemplate
+    method = cv.TM_CCOEFF_NORMED
+    result = cv.matchTemplate(default_image, needle_image, method) #TM_SQDIFF_NORMED
+    #returns confidence score
+    #print(result)
+
+   
+    locations = np.where(result >= threshold)
+    #np.where looks like this:
+    #(array([334, 335]), array([91, 91]))
+    #print(locations)
+
+    #zip those into position tuples
+    locations = list(zip(*locations[::-1]))
+    #print(locations)
+
+    #bulding list
+    rectangles = []
+    for loc in locations:
+        rect = [int(loc[0]), int(loc[1]), needle_w, needle_h] #build rectangle for each location
+        rectangles.append(rect)
+        rectangles.append(rect)
+
+    rectangles, weights = cv.groupRectangles(rectangles, 1, 0.5) #Grouping all rectangles that are close to eachother
+    print(rectangles)
+
+    points = []
+    #printing box
+    if len(rectangles):
+        print('Found Needle.')
+
+        needle_w = needle_image.shape[1]
+        needle_h = needle_image.shape[0]
+        line_color = (0,255,0)
+        line_type = cv.LINE_4
+        marker_color = (255,0,255)
+        marker_type = cv.MARKER_CROSS
+
+        #need to loop over all locations and draw their rectangle
+        for (x,y,w,h) in rectangles:
+            center_x = x + int(w/2)
+            center_y = y + int(h/2)
+            #save the points
+            points.append((center_x,center_y))
+
+            if debug_mode == 'rectangles':
+                #determine box positions:
+                top_left = (x,y)
+                bottom_right = (x+w, y+h)
+                #Draw box
+                cv.rectangle(default_image, top_left, bottom_right, line_color, line_type)
+            elif debug_mode == 'points':
+                cv.drawMarker(default_image, (center_x,center_y), marker_color, marker_type)
+        
+        if debug_mode:
+            cv.imshow('Matches', default_image)
+            cv.waitKey()
+            #cv.imwrite('result.jpg', default_image)
     
-    bottom_right = (top_left[0] + needle_w, top_left[1] + needle_h) #using width + height of image
-    #draw rectangle
-    cv.rectangle(default_image, top_left, bottom_right,
-                 color=(0, 255, 0), thickness=3, lineType=cv.LINE_4)
-    
-    cv.imshow('Result', default_image)
-    cv.waitKey()
-    #if you want to save result to file:
-    #cv.imwrite('result.jpg', default_image)
-else:
-    print("Needle not found :(")
+    return points
+
+points = findClickPositions('zombie_1.jpg','img_1.jpg',
+                            threshold=0.70, debug_mode= 'points') #'points' 'rectangles'
+print(points)
