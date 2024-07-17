@@ -64,6 +64,13 @@ def findClickPositions(needle_image_path, default_image_path, threshold = 0.6, d
                 cv.rectangle(default_image, top_left, bottom_right, line_color, line_type)
             elif debug_mode == 'points':
                 cv.drawMarker(default_image, (center_x,center_y), marker_color, marker_type)
+            elif debug_mode == 'both':
+                top_left = (x,y)
+                bottom_right = (x+w, y+h)
+                #Draw box
+                cv.rectangle(default_image, top_left, bottom_right, line_color, line_type)
+                #Draw Marker
+                cv.drawMarker(default_image, (center_x,center_y), marker_color, marker_type)
         
         if debug_mode:
             cv.imshow('Matches', default_image)
@@ -73,5 +80,5 @@ def findClickPositions(needle_image_path, default_image_path, threshold = 0.6, d
     return points
 
 points = findClickPositions('zombie_1.jpg','img_1.jpg',
-                            threshold=0.70, debug_mode= 'points') #'points' 'rectangles'
+                            threshold=0.70, debug_mode= 'points') #'points' 'rectangles' 'both'
 print(points)
