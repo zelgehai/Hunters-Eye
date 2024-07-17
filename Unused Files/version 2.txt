@@ -1,0 +1,16 @@
+import cv2 as cv
+import numpy as np
+#pyautogui -> automates keyboard + mouse movements [also allows locateonScreen]
+import os
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
+default_image = cv.imread('img_1.jpg', cv.IMREAD_REDUCED_COLOR_2) #IMREAD_UNCHANGED
+needle_image = cv.imread('zombie_1.jpg', cv.IMREAD_REDUCED_COLOR_2)
+
+#calls matchtemplate
+result = cv.matchTemplate(default_image, needle_image, cv.TM_CCOEFF_NORMED) #returns confidence score
+print(result)
+
+threshold = 0.85
+locations = np.where(result >= threshold)
+print(locations)
