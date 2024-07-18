@@ -80,5 +80,5 @@ def findClickPositions(needle_image_path, default_image_path, threshold = 0.6, d
     return points
 
 points = findClickPositions('zombie_1.jpg','img_1.jpg',
-                            threshold=0.70, debug_mode= 'points') #'points' 'rectangles' 'both'
+                            threshold=0.70, debug_mode= 'both') #'points' 'rectangles' 'both'
 print(points)
