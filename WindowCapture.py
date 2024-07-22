@@ -65,6 +65,8 @@ class WindowCapture:
             raise RuntimeError(f"Unable to acquire screenshot! Result: {result}")
         #img = img[self.cropped_y:self.h, self.cropped_x:self.w]
         return img
+        #This code Would give me a black screenshot with D2R
+        #Updated with above code.
         '''
         wDC = win32gui.GetWindowDC(self.hwnd)
         dcObj=win32ui.CreateDCFromHandle(wDC)
