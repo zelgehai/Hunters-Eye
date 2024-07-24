@@ -16,6 +16,7 @@ class WindowCapture:
     def __init__(self, window_name) -> None:
 
         self.hwnd = win32gui.FindWindow(None, window_name)
+        #Refer to Video #5, 3:00 if problems occur.
         if not self.hwnd:
             raise Exception('Window not found: {}'.format(window_name))
         
@@ -93,7 +94,7 @@ class WindowCapture:
         '''
     
         #Get List of Windows
-    @staticmethod
+    @staticmethod   #Decorator Above the Method, and deleted self parameter.
     def list_window_names():
         def winEnumHandler(hwnd, ctx):
             if win32gui.IsWindowVisible(hwnd):
