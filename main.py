@@ -3,6 +3,7 @@ import numpy as np
 import os
 from time import time
 from Window_Capture import WindowCapture
+from vision import findClickPositions
 
 #WindowCapture.list_window_names()
 #exit()
@@ -14,7 +15,8 @@ loop_time = time()
 while(True):
     screenshot = wincap.get_screenshot()
 
-    cv.imshow('Computer Vision', screenshot)
+    #cv.imshow('Computer Vision', screenshot) #just showing us the raw screenshot, not needed anymore
+    findClickPositions('zombie_1.jpg', screenshot, 0.5, 'rectangles')
 
     #print('FPS {}'.format(1 / (time() - loop_time)))
     loop_time = time()
