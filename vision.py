@@ -58,13 +58,15 @@ def findClickPositions(needle_image_path, default_image, threshold = 0.6, debug_
                 top_left = (x,y)
                 bottom_right = (x+w, y+h)
                 #Draw box
-                default_image = default_image.copy() #Make a writable copy
+                default_image = default_image.copy() #Make a writable copy [working line of code]
                 cv.rectangle(default_image, top_left, bottom_right, line_color, line_type)
             elif debug_mode == 'points':
+                default_image = default_image.copy() #Make a writable copy [Not sure if this line works]
                 cv.drawMarker(default_image, (center_x,center_y), marker_color, marker_type)
             elif debug_mode == 'both':
                 top_left = (x,y)
                 bottom_right = (x+w, y+h)
+                default_image = default_image.copy() #Make a writable copy [Not sure if this line works]
                 #Draw box
                 cv.rectangle(default_image, top_left, bottom_right, line_color, line_type)
                 #Draw Marker
