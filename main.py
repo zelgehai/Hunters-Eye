@@ -3,20 +3,22 @@ import numpy as np
 import os
 from time import time
 from Window_Capture import WindowCapture
-from vision import findClickPositions
+from vision import Vision
 
 #WindowCapture.list_window_names()
 #exit()
 
 #create object
 wincap = WindowCapture('Diablo II: Resurrected')
+#Init Vision Class; because it not gonna change inside main loop:
+Vision_zombie = Vision('zombie_1.jpg')
 
 loop_time = time()
 while(True):
     screenshot = wincap.get_screenshot()
 
-    #cv.imshow('Computer Vision', screenshot) #just showing us the raw screenshot, not needed anymore
-    findClickPositions('zombie_1.jpg', screenshot, 0.5, 'rectangles')
+    #displays the processed img
+    Vision_zombie.find(screenshot, 0.5, 'rectangles')
 
     #print('FPS {}'.format(1 / (time() - loop_time)))
     loop_time = time()
