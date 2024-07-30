@@ -18,10 +18,15 @@ loop_time = time()
 while(True):
     screenshot = wincap.get_screenshot()
 
-    #displays the processed img
-    #Points used for the bot.
-    points = Vision_zombie.find(screenshot, 0.40, 'rectangles')
+    #Do object detection
+    rectangles = Vision_zombie.find(screenshot, 0.40)
 
+    #draw the dtection results onto the original image
+    output_image = Vision_zombie.draw_rectangles(screenshot,rectangles) #inserts image and list of rectangles. returns output
+    
+    #display the processed image
+    cv.imshow('Matches', output_image)
+    
     #print('FPS {}'.format(1 / (time() - loop_time)))
     loop_time = time()
 
