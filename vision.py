@@ -15,7 +15,7 @@ class Vision:
         self.needle_h = self.needle_image.shape[0]
         self.method = method
 
-    def find(self, default_image, threshold = 0.6, debug_mode=None):
+    def find(self, default_image, threshold = 0.6):
 
         #default_image = cv.imread(default_image_path, cv.IMREAD_REDUCED_COLOR_2) #IMREAD_UNCHANGED
         #needle_image = cv.imread(needle_image_path, cv.IMREAD_REDUCED_COLOR_2)
@@ -47,23 +47,55 @@ class Vision:
         rectangles, weights = cv.groupRectangles(rectangles, 1, 0.5) #Grouping all rectangles that are close to eachother
         print(rectangles)
 
+        return rectangles
+
+    def get_click_points(self,rectangles):
         points = []
         #printing box
-        if len(rectangles):
-            print('Found Needle.')
-
+        #if len(rectangles):
+            #print('Found Needle.')
+        '''
             line_color = (0,255,0)
             line_type = cv.LINE_4
             marker_color = (255,0,255)
             marker_type = cv.MARKER_CROSS
-
+        '''
             #need to loop over all locations and draw their rectangle
-            for (x,y,w,h) in rectangles:
-                center_x = x + int(w/2)
-                center_y = y + int(h/2)
-                #save the points
-                points.append((center_x,center_y))
+        for (x,y,w,h) in rectangles:
+            #Determines center position
+            center_x = x + int(w/2)
+            center_y = y + int(h/2)
+            #save the points
+            points.append((center_x,center_y))
+        return points
 
+    #given list of [x,y,w,h] rectangles and canvas image to draw on, returns an image with the rectangles drawn.
+    def draw_rectangles(self, default_image, rectangles):
+        line_color = (0,255,0)
+        line_type = cv.LINE_4
+
+        for(x,y,w,h) in rectangles:
+            #determines box positions:
+            top_left = (x,y)
+            bottom_right = (x+w, y+h)
+            #draw the box
+            default_image = default_image.copy() #Make a writable copy [working line of code]
+            cv.rectangle(default_image, top_left, bottom_right, line_color, lineType=line_type)
+        
+        return default_image
+    
+    def draw_crosshairs(self, default_image, points):
+        #BGR Colors
+        marker_color = (255,0,255)
+        marker_type = cv.MARKER_CROSS
+
+        for(center_x, center_y) in points:
+            #draw center point
+            default_image = default_image.copy() #Make a writable copy [Not sure if this line works]
+            cv.drawMarker(default_image, (center_x,center_y), marker_color, marker_type)
+        return default_image
+
+    '''
                 if debug_mode == 'rectangles':
                     #determine box positions:
                     top_left = (x,y)
@@ -89,3 +121,4 @@ class Vision:
             #cv.imwrite('result.jpg', default_image)        
         
         return points
+    '''
