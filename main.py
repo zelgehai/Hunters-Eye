@@ -9,6 +9,7 @@ from vision import Vision
 #exit()
 
 #create object
+#insert 'none' into argument to capture whole screen. 15:00 vid 5
 wincap = WindowCapture('Diablo II: Resurrected')
 #Init Vision Class; because it not gonna change inside main loop:
 Vision_zombie = Vision('zombie_1.jpg')
@@ -18,7 +19,8 @@ while(True):
     screenshot = wincap.get_screenshot()
 
     #displays the processed img
-    Vision_zombie.find(screenshot, 0.5, 'rectangles')
+    #Points used for the bot.
+    points = Vision_zombie.find(screenshot, 0.40, 'rectangles')
 
     #print('FPS {}'.format(1 / (time() - loop_time)))
     loop_time = time()
