@@ -6,3 +6,8 @@ https://docs.opencv.org/4.x/d4/dc6/tutorial_py_template_matching.html
 7/24/2024
 Left off at Video #5 8:30
 left video at 12:54
+
+
+7/31/2024
+do Pre-Image Processing
+15:52 video
