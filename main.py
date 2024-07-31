@@ -13,16 +13,22 @@ from vision import Vision
 wincap = WindowCapture('Diablo II: Resurrected')
 #Init Vision Class; because it not gonna change inside main loop:
 Vision_zombie = Vision('zombie_1.jpg')
+#Init trackbar Window
+Vision_zombie.init_control_gui()
+
 
 loop_time = time()
 while(True):
     screenshot = wincap.get_screenshot()
 
+    #Pre-Processing of Image
+    output_image = Vision_zombie.apply_hsv_filter(screenshot)
+
     #Do object detection
-    rectangles = Vision_zombie.find(screenshot, 0.40)
+    #rectangles = Vision_zombie.find(screenshot, 0.40)
 
     #draw the dtection results onto the original image
-    output_image = Vision_zombie.draw_rectangles(screenshot,rectangles) #inserts image and list of rectangles. returns output
+    #output_image = Vision_zombie.draw_rectangles(screenshot,rectangles) #inserts image and list of rectangles. returns output
     
     #display the processed image
     cv.imshow('Matches', output_image)
