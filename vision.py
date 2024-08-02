@@ -18,7 +18,7 @@ class Vision:
         self.needle_h = self.needle_image.shape[0]
         self.method = method
 
-    def find(self, default_image, threshold = 0.6):
+    def find(self, default_image, threshold = 0.6, max_results=10):
 
         #default_image = cv.imread(default_image_path, cv.IMREAD_REDUCED_COLOR_2) #IMREAD_UNCHANGED
         #needle_image = cv.imread(needle_image_path, cv.IMREAD_REDUCED_COLOR_2)
@@ -40,6 +40,10 @@ class Vision:
         locations = list(zip(*locations[::-1]))
         #print(locations)
 
+        #if no results, return now. This allows us to cocat together results, less errors
+        if not locations:
+            return np.array([], dtype=np.int32).reshape(0,4)
+        
         #bulding list
         rectangles = []
         for loc in locations:
@@ -48,7 +52,10 @@ class Vision:
             rectangles.append(rect)
 
         rectangles, weights = cv.groupRectangles(rectangles, 1, 0.5) #Grouping all rectangles that are close to eachother
-        print(rectangles)
+        #print(rectangles)
+        if len(rectangles) > max_results:
+            print("Too many Results (Identified needles), raise the threshhold.")
+            rectangles = rectangles[:max_results] #trancades results if > threhshold
 
         return rectangles
 
