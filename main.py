@@ -14,7 +14,7 @@ from hsvwindow import HsvWindow
 wincap = WindowCapture('Diablo II: Resurrected')
 #Init Vision Class; because it not gonna change inside main loop:
 Vision_zombie = Vision('zombie_1_processed.jpg')
-#Init trackbar Window
+# Init trackbar Window
 Vision_zombie.init_control_gui()
 
 #Zombie HSV FIlter [ Just brighter screen]
