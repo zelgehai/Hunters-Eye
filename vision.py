@@ -12,11 +12,12 @@ class Vision:
     method  = None
 
     def __init__(self, needle_image_path, method=cv.TM_CCOEFF_NORMED):
-        #lead image trying to match
-        self.needle_image = cv.imread(needle_image_path, cv.IMREAD_UNCHANGED)
-        self.needle_w = self.needle_image.shape[1]
-        self.needle_h = self.needle_image.shape[0]
-        self.method = method
+        if needle_image_path:
+            #lead image trying to match
+            self.needle_image = cv.imread(needle_image_path, cv.IMREAD_UNCHANGED)
+            self.needle_w = self.needle_image.shape[1]
+            self.needle_h = self.needle_image.shape[0]
+            self.method = method
 
     def find(self, default_image, threshold = 0.6, max_results=10):
 
