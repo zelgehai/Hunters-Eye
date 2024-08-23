@@ -10,7 +10,7 @@ class Vision:
     needle_w = 0
     needle_h = 0
     method  = None
-
+    
     def __init__(self, needle_image_path, method=cv.TM_CCOEFF_NORMED):
         if needle_image_path:
             #lead image trying to match

@@ -1,9 +1,11 @@
 import cv2 as cv
 import numpy as np
 import os
-from time import time
+from time import sleep, time
 from Window_Capture import WindowCapture
 from vision import Vision
+import pyautogui
+from threading import Thread
 
 #removable code:
 pos_count = 0
@@ -19,6 +21,25 @@ cascade_zombie = cv.CascadeClassifier('cascade_classifier/cascade/cascade.xml')
 #loading empty Vision class
 vision_zombie = Vision(None)
 
+is_bot_in_action = False
+
+#this function gets performed inside another thread:
+def bot_actions(rectangles):
+    #Bot actions:
+    if len(rectangles) > 0:
+        #grab first objects, and find the place to click
+        targets = vision_zombie.get_click_points(rectangles)
+        target = wincap.get_screen_position(targets[0])
+        pyautogui.click(x=target[0], y=target[1])   #moves mouse there
+        pyautogui.click()
+        print("moving mouse!")
+        #pydirectinput.moveTo(100,150)
+        #wait 5 seconds..
+        sleep(1)
+    #leting main loop know when this thread is done/completed:
+    global is_bot_in_action
+    is_bot_in_action = False
+
 loop_time = time()
 while(True):
     screenshot = wincap.get_screenshot()
@@ -31,7 +52,12 @@ while(True):
     #display the processed image
     #cv.imshow('Processed Image', processed_image) #processed image window
     cv.imshow('Matches', detection_image)
-    
+
+    #take bot actions
+    if not is_bot_in_action:
+        is_bot_in_action = True
+        t = Thread(target=bot_actions, args=(rectangles,)) #needs to be sent as a tuple.
+        t.start()
     
     #print('FPS {}'.format(1 / (time() - loop_time)))
     loop_time = time()
