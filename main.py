@@ -10,7 +10,7 @@ from threading import Thread
 #removable code:
 pos_count = 0
 neg_count = 0
-
+#testing
 #WindowCapture.list_window_names()
 #exit()
 
