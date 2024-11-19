@@ -65,13 +65,13 @@ while(True):
     if key == ord('q'):
         cv.destroyAllWindows()
         break
-    elif key == ord('f'):
-        cv.imwrite('cascade_classifier/positive/{}.jpg'.format(loop_time), screenshot)
-        pos_count += 1
-        print("saved Positive Image #", pos_count)
-    elif key == ord('d'):
-        cv.imwrite('cascade_classifier/negative/{}.jpg'.format(loop_time), screenshot)
-        neg_count += 1
-        print("saved Negative Image #", neg_count)
+    # elif key == ord('f'):
+    #     cv.imwrite('cascade_classifier/positive/{}.jpg'.format(loop_time), screenshot)
+    #     pos_count += 1
+    #     print("saved Positive Image #", pos_count)
+    # elif key == ord('d'):
+    #     cv.imwrite('cascade_classifier/negative/{}.jpg'.format(loop_time), screenshot)
+    #     neg_count += 1
+    #     print("saved Negative Image #", neg_count)
 
 print('Done.')
