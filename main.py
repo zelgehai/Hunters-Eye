@@ -20,9 +20,14 @@ cascade_zombie = cv.CascadeClassifier('cascade_classifier/cascade/cascade.xml')
 #loading empty Vision class
 vision_zombie = Vision(None)
 
+#Potion Code ------------------------------------------------------
+Vision_minor_hp_pot = Vision('minor_hp_pot.jpg')
+Vision_minor_mana_pot = Vision('minor_mana_pot.jpg') 
+
+
 is_bot_in_action = False
 
-#this function gets performed inside another thread: [must call this function]
+# this function gets performed inside another thread: [must call this function]
 # def bot_actions(rectangles):
 #     #Bot actions:
 #     if len(rectangles) > 0:
@@ -31,6 +36,8 @@ is_bot_in_action = False
 #         target = wincap.get_screen_position(targets[0])
 #         pyautogui.click(x=target[0], y=target[1])   #moves mouse there
 #         pyautogui.click()
+#         print("AMt of Rectangles:" , len(rectangles))
+#         print(target[0],target[1])
 #         print("moving mouse!")
 #         sleep(1)
 #     #leting main loop know when this thread is done/completed:
@@ -42,21 +49,32 @@ while(True):
     screenshot = wincap.get_screenshot()
 
     #object Detection, will look at screenshot and return list of rectangles where obj is found
-    rectangles = cascade_zombie.detectMultiScale(screenshot)
+    #rectangles = cascade_zombie.detectMultiScale(screenshot)
     #draw detection results onto original image:
-    detection_image = vision_zombie.draw_rectangles(screenshot, rectangles)
+    #detection_image = vision_zombie.draw_rectangles(screenshot, rectangles)
+
+    #rectangles = minor_hp_pot.find(screenshot, 0.40)
+    rectangles = Vision_minor_hp_pot.find(screenshot,0.90)
+    output_image = Vision_minor_hp_pot.draw_rectangles(screenshot,rectangles)
+
+    #mana
+    mpots = Vision_minor_mana_pot.find(screenshot,0.90)
+    #tg = Vision_minor_mana_pot.get_click_points(mpots)
+    output_image = Vision_minor_mana_pot.draw_rectangles(output_image,mpots) # can replace mpots with tg
+    cv.imshow('Matchesz', output_image)
 
     #display the processed image
-    #cv.imshow('Processed Image', processed_image) #processed image window
-    cv.imshow('Matches', detection_image)
+        #cv.imshow('Processed Image', processed_image) #processed image window
+    #cv.imshow('Matches', detection_image)
 
-    #take bot actions
+    # take bot actions
     # if not is_bot_in_action:
     #     is_bot_in_action = True
     #     t = Thread(target=bot_actions, args=(rectangles,)) #needs to be sent as a tuple.
     #     t.start()
     
     #print('FPS {}'.format(1 / (time() - loop_time)))
+    print("# of Health Pots: " ,len(rectangles), "# of Mana Pots: ", len(mpots))
     loop_time = time()
 
     #'pressing "Q" will exit
