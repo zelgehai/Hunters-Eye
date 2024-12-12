@@ -93,8 +93,6 @@ def bot_actions_MP(mpots_combined):
 
 
 loop_time = time()
-health = 100
-
 while(True):
     screenshot = wincap.get_screenshot()
     output_image = screenshot.copy()
@@ -106,20 +104,19 @@ while(True):
     #rectangles = minor_hp_pot.find(screenshot, 0.40)
     #hpots = HP1.find(screenshot,0.95)
     #output_image = HP1.draw_rectangles(screenshot,rectangles)
-    if health <= 80:
-        #health pots
-        hpots_combined = []
-        for hp_vision in health_potions:
-            hpots = hp_vision.find(screenshot,0.97)
-            hpots_combined.extend(hpots)
-            output_image = hp_vision.draw_rectangles(output_image, hpots)
+    #health pots
+    hpots_combined = []
+    for hp_vision in health_potions:
+        hpots = hp_vision.find(screenshot,0.97)
+        hpots_combined.extend(hpots)
+        output_image = hp_vision.draw_rectangles(output_image, hpots)
 
-        #mana pots
-        mpots_combined = []
-        for mp_vision in mana_potions:
-            mpots = mp_vision.find(screenshot,0.97)
-            mpots_combined.extend(mpots)
-            output_image = mp_vision.draw_rectangles(output_image, mpots)
+    #mana pots
+    mpots_combined = []
+    for mp_vision in mana_potions:
+        mpots = mp_vision.find(screenshot,0.97)
+        mpots_combined.extend(mpots)
+        output_image = mp_vision.draw_rectangles(output_image, mpots)
     #tg = Vision_minor_mana_pot.get_click_points(mpots)
     cv.imshow('Matches', output_image)
 
@@ -130,11 +127,10 @@ while(True):
     # take bot actions
     if not is_bot_in_action:
         is_bot_in_action = True
-        if health <= 80:
-            t = Thread(target=bot_interrupt_detection, args=(hpots,mpots)) #needs to be sent as a tuple.
-            t.start()
+        t = Thread(target=bot_interrupt_detection, args=(hpots,mpots)) #needs to be sent as a tuple.
+        t.start()
     print('FPS {}'.format(1 / (time() - loop_time)))
-    #print("# of Health Pots: " ,len(hpots_combined), "# of Mana Pots: ", len(mpots_combined))
+    print("# of Health Pots: " ,len(hpots_combined), "# of Mana Pots: ", len(mpots_combined))
     loop_time = time()
 
     #'pressing "Q" will exit
