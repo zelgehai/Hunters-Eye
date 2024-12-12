@@ -28,9 +28,9 @@ MP1 = Vision('items/potions/1MP.jpg')
 JV35 = Vision('items/potions/35JV.jpg') 
 
 
-is_bot_in_action = False
+is_bot_in_action = False         #Default Set to False. True if you dont want any BotAction
 
-#detections "Interrupt service routine"
+#detections "Interrupt service routine" [Inside of a Thread]
 def bot_interrupt_detection(hpots,mpots):
     global is_bot_in_action
     if len(hpots) > 0:
@@ -41,28 +41,23 @@ def bot_interrupt_detection(hpots,mpots):
     
 #this function gets performed inside another thread: [must call this function]
 def bot_actions(hpots):
-    #Bot actions:
-    #grab first objects, and find the place to click
     targets = HP1.get_click_points(hpots)
     target = wincap.get_screen_position(targets[0])
     pyautogui.moveTo(x=target[0], y=target[1])
     sleep(0.1)
-    pyautogui.click()
+    #pyautogui.click()
+    pyautogui.press('e')
     print(target[0],target[1])
-    sleep(0.5)
-    #leting main loop know when this thread is done/completed:
+    sleep(0.2)
 
 def bot_actions_MP(mpots):
-    #grab first objects, and find the place to click
     targets = MP1.get_click_points(mpots)
     target = wincap.get_screen_position(targets[0])
     pyautogui.moveTo(x=target[0], y=target[1])
     sleep(0.1)
-    #pyautogui.click(x=target[0], y=target[1])   #moves mouse there
-    pyautogui.click()
+    pyautogui.press('e')
     print(target[0],target[1])
-    sleep(0.5)
-    #leting main loop know when this thread is done/completed:
+    sleep(0.2)
 
 loop_time = time()
 while(True):
@@ -78,7 +73,7 @@ while(True):
     #output_image = HP1.draw_rectangles(screenshot,rectangles)
 
     #mana
-    mpots = MP1.find(screenshot,0.90)
+    mpots = MP1.find(screenshot,0.99)
     #tg = Vision_minor_mana_pot.get_click_points(mpots)
     output_image = MP1.draw_rectangles(screenshot,mpots) # can replace mpots with tg
     cv.imshow('Matches', output_image)
