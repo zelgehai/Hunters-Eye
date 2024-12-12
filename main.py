@@ -1,11 +1,14 @@
 import cv2 as cv
 import numpy as np
 import os
+import keyboard
 from time import sleep, time
 from Window_Capture import WindowCapture
 from vision import Vision
 import pyautogui
 from threading import Thread
+from pindle import pindle_script
+from pindle import nihlathak_portal_search
 
 #removable code:
 pos_count = 0
@@ -26,6 +29,7 @@ vision_zombie = Vision(None)
 #HP1 = Vision('items/potions/1HP.jpg')
 #MP1 = Vision('items/potions/1MP.jpg')
 JV35 = Vision('items/potions/35JV.jpg')
+nihl_portal = Vision('items/misc/NithalakPortal.jpg')
 
 health_potions = [
     Vision('items/potions/1HP.jpg'),
@@ -49,7 +53,7 @@ is_bot_in_action = False         #Default Set to False. True if you dont want an
 #detections "Interrupt service routine" [Inside of a Thread]
 def bot_interrupt_detection(hpots,mpots):
     global is_bot_in_action
-    if len(hpots_combined) >= 4:
+    if len(hpots_combined) > 0:
         bot_actions_HP(hpots_combined)
     elif len(mpots_combined) > 0:
         bot_actions_MP(mpots_combined)
@@ -91,6 +95,11 @@ def bot_actions_MP(mpots_combined):
             print(f"Mana Potion clicked at: {target[0]}, {target[1]}")
             sleep(0.2)
 
+#PINDLE 
+def on_press_f9():
+    print("F9 Pressed!")
+    pindle_script(wincap,screenshot,nihl_portal)
+keyboard.add_hotkey('F9', on_press_f9)
 
 loop_time = time()
 health = 100
@@ -106,6 +115,9 @@ while(True):
     #rectangles = minor_hp_pot.find(screenshot, 0.40)
     #hpots = HP1.find(screenshot,0.95)
     #output_image = HP1.draw_rectangles(screenshot,rectangles)
+
+    #Pindle Script:
+
     if health <= 80:
         #health pots
         hpots_combined = []
@@ -133,7 +145,7 @@ while(True):
         if health <= 80:
             t = Thread(target=bot_interrupt_detection, args=(hpots,mpots)) #needs to be sent as a tuple.
             t.start()
-    print('FPS {}'.format(1 / (time() - loop_time)))
+    #print('FPS {}'.format(1 / (time() - loop_time)))
     #print("# of Health Pots: " ,len(hpots_combined), "# of Mana Pots: ", len(mpots_combined))
     loop_time = time()
 
@@ -151,5 +163,7 @@ while(True):
     #     cv.imwrite('cascade_classifier/negative/{}.jpg'.format(loop_time), screenshot)
     #     neg_count += 1
     #     print("saved Negative Image #", neg_count)
+
+    #Listen for 'F9' Press {PINDLE}
 
 print('Done.')
