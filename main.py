@@ -19,30 +19,51 @@ wincap = WindowCapture('Diablo II: Resurrected')
 cascade_zombie = cv.CascadeClassifier('cascade_classifier/cascade/cascade.xml')
 #loading empty Vision class
 vision_zombie = Vision(None)
+MP1 = Vision(None)
 
 #Potion Code ------------------------------------------------------
-Vision_minor_hp_pot = Vision('minor_hp_pot.jpg')
-Vision_minor_mana_pot = Vision('minor_mana_pot.jpg') 
+HP1 = Vision('items/potions/1HP.jpg')
+MP1 = Vision('items/potions/1MP.jpg')
+JV35 = Vision('items/potions/35JV.jpg') 
 
 
 is_bot_in_action = False
 
-# this function gets performed inside another thread: [must call this function]
-# def bot_actions(rectangles):
-#     #Bot actions:
-#     if len(rectangles) > 0:
-#         #grab first objects, and find the place to click
-#         targets = vision_zombie.get_click_points(rectangles)
-#         target = wincap.get_screen_position(targets[0])
-#         pyautogui.click(x=target[0], y=target[1])   #moves mouse there
-#         pyautogui.click()
-#         print("AMt of Rectangles:" , len(rectangles))
-#         print(target[0],target[1])
-#         print("moving mouse!")
-#         sleep(1)
-#     #leting main loop know when this thread is done/completed:
-#     global is_bot_in_action
-#     is_bot_in_action = False
+#this function gets performed inside another thread: [must call this function]
+def bot_actions(rectangles):
+    #Bot actions:
+    if len(rectangles) > 0:
+        #grab first objects, and find the place to click
+        targets = vision_zombie.get_click_points(rectangles)
+        target = wincap.get_screen_position(targets[0])
+        pyautogui.moveTo(x=target[0], y=target[1])
+        sleep(0.1)
+        pyautogui.click()
+        print("AMt of Rectangles:" , len(rectangles))
+        print(target[0],target[1])
+        print("moving mouse!")
+        sleep(0.5)
+    #leting main loop know when this thread is done/completed:
+    global is_bot_in_action
+    is_bot_in_action = False
+
+def bot_actions_MP(mpots):
+    #Bot actions:
+    if len(mpots) > 0:
+        #grab first objects, and find the place to click
+        targets = MP1.get_click_points(mpots)
+        target = wincap.get_screen_position(targets[0])
+        pyautogui.moveTo(x=target[0], y=target[1])
+        sleep(0.1)
+        #pyautogui.click(x=target[0], y=target[1])   #moves mouse there
+        pyautogui.click()
+        print("AMt of Mpots:" , len(mpots))
+        print(target[0],target[1])
+        print("moving mouse!")
+        sleep(0.5)
+    #leting main loop know when this thread is done/completed:
+    global is_bot_in_action
+    is_bot_in_action = False
 
 loop_time = time()
 while(True):
@@ -54,27 +75,32 @@ while(True):
     #detection_image = vision_zombie.draw_rectangles(screenshot, rectangles)
 
     #rectangles = minor_hp_pot.find(screenshot, 0.40)
-    rectangles = Vision_minor_hp_pot.find(screenshot,0.90)
-    output_image = Vision_minor_hp_pot.draw_rectangles(screenshot,rectangles)
+    rectangles = HP1.find(screenshot,0.95)
+    #output_image = HP1.draw_rectangles(screenshot,rectangles)
 
     #mana
-    mpots = Vision_minor_mana_pot.find(screenshot,0.90)
+    mpots = MP1.find(screenshot,0.90)
     #tg = Vision_minor_mana_pot.get_click_points(mpots)
-    output_image = Vision_minor_mana_pot.draw_rectangles(output_image,mpots) # can replace mpots with tg
-    cv.imshow('Matchesz', output_image)
+    output_image = MP1.draw_rectangles(screenshot,mpots) # can replace mpots with tg
+    cv.imshow('Matches', output_image)
 
     #display the processed image
         #cv.imshow('Processed Image', processed_image) #processed image window
     #cv.imshow('Matches', detection_image)
 
     # take bot actions
-    # if not is_bot_in_action:
-    #     is_bot_in_action = True
-    #     t = Thread(target=bot_actions, args=(rectangles,)) #needs to be sent as a tuple.
-    #     t.start()
-    
+    if not is_bot_in_action:
+        is_bot_in_action = True
+        t = Thread(target=bot_actions, args=(rectangles,)) #needs to be sent as a tuple.
+        t.start()
+    #pick up mana potions
+    if not is_bot_in_action:
+        is_bot_in_action = True
+        t = Thread(target=bot_actions_MP, args=(mpots,)) #needs to be sent as a tuple.
+        t.start()
     #print('FPS {}'.format(1 / (time() - loop_time)))
     print("# of Health Pots: " ,len(rectangles), "# of Mana Pots: ", len(mpots))
+    
     loop_time = time()
 
     #'pressing "Q" will exit
