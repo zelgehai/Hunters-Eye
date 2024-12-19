@@ -103,6 +103,7 @@ keyboard.add_hotkey('F9', on_press_f9)
 
 loop_time = time()
 health = 100
+#frame_counter = 0 #Init frame counter [ Possible fix to fps issues]
 
 while(True):
     screenshot = wincap.get_screenshot()
@@ -116,7 +117,6 @@ while(True):
     #hpots = HP1.find(screenshot,0.95)
     #output_image = HP1.draw_rectangles(screenshot,rectangles)
 
-    #Pindle Script:
 
     if health <= 80:
         #health pots
@@ -132,6 +132,8 @@ while(True):
             mpots = mp_vision.find(screenshot,0.97)
             mpots_combined.extend(mpots)
             output_image = mp_vision.draw_rectangles(output_image, mpots)
+        frame_counter = 0
+
     #tg = Vision_minor_mana_pot.get_click_points(mpots)
     cv.imshow('Matches', output_image)
 
@@ -145,7 +147,7 @@ while(True):
         if health <= 80:
             t = Thread(target=bot_interrupt_detection, args=(hpots,mpots)) #needs to be sent as a tuple.
             t.start()
-    #print('FPS {}'.format(1 / (time() - loop_time)))
+    print('FPS {}'.format(1 / (time() - loop_time)))
     #print("# of Health Pots: " ,len(hpots_combined), "# of Mana Pots: ", len(mpots_combined))
     loop_time = time()
 
